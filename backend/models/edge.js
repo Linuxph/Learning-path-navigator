@@ -7,7 +7,8 @@ const edgeSchema = new mongoose.Schema({
     animated: { type: Boolean, default: false }, // Whether the edge is animated
     style: { 
         stroke: { type: String, default: '#334155' }, // Color of the edge
-    }
+    },
+    pathId: { type: mongoose.Schema.Types.ObjectId, ref: 'Path', required: true }, 
 });
 
 const edgeModel = mongoose.model('Edge', edgeSchema);

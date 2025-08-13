@@ -21,6 +21,7 @@ const Dashboard = () => {
   
   return (
     useEffect( () => {
+      localStorage.setItem("login", "false");
       const fetchPaths = async () => {
         try {
           const response = await fetch("http://localhost:3000/api/paths", {
@@ -34,7 +35,6 @@ const Dashboard = () => {
           }
           const data = await response.json();
           console.log("Fetched paths:", data);
-          localStorage.setItem("pathId", data[0]._id);
           setpaths(data);
         } catch (error) {
           toast.error("An error occurred while fetching paths.");
@@ -78,7 +78,7 @@ const Dashboard = () => {
               <div className="mt-4 w-full max-w-2xl">
                 {paths.map((path, index) => (
                   <div key={index} className="path text-center w-[15vw] h-[5vh] rounded-2xl border-black border-2" >
-                    <Link to={`/path/${path.title}`}>{path.title}</Link>
+                    <Link to={`/path/${path._id}`}>{path.title}</Link>
                   </div>
                 ))}
               </div>

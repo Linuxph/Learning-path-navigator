@@ -83,13 +83,13 @@ const createPath = async (req, res) => {
 
 const getPathById = async (req, res) => {
     try {
-        const path = await Path.findById(req.params.id);
+        const path = await Path.findById({_id :new mongoose.Types.ObjectId( req.params.id)});
         if (!path) {
             return res.status(404).json({ message: 'Path not found' });
         }
         // Fetch associated nodes and edges
-        const nodes = await Node.find({ pathId: req.params.id });
-        const edges = await Edge.find({ pathId: req.params.id });
+        const nodes = await Node.find({ 'data.pathId': req.params.id });
+        const edges = await Edge.find({ 'pathId': req.params.id });
 
         res.status(200).json({path, nodes, edges});
     } catch (error) {

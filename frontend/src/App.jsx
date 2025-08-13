@@ -16,7 +16,7 @@ const App = () => {
       <Routes>
           <Route path="/" element={<Dashboard/>} />
           <Route path="/auth" element={<Authenticate/>} />
-          <Route path="/paths/:pathname" element={<PathView/>} />
+          <Route path="/path/:pathId" element={<PathView/>} />
           <Route path="/edit/new" element={<PathEditor/>} />
       </Routes>
     </Router>
