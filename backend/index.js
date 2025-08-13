@@ -3,6 +3,10 @@ const express = require('express');
 // Importing required modules
 const cors = require('cors');
 const helmet = require('helmet');
+const authMiddleware = require('./middleware/authentication');
+const notFoundMiddleware = require('./middleware/not-found');
+const errorHandlerMiddleware = require('./middleware/error-handler');
+
 // Importing environment variables
 require('dotenv').config();
 
@@ -28,9 +32,16 @@ app.use(cors(
 ));
 app.use(helmet());
 
+
+
 app.use('/api',auth);
-app.use('/api', paths);
-app.use('/api', node);
+app.use('/api',authMiddleware, paths);
+app.use('/api',authMiddleware, node);
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+
+
 
 // Starting the server
 app.listen(PORT, async() => {

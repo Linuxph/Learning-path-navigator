@@ -1,88 +1,41 @@
-import React, { useState } from "react";
-// import moon from "../assets/moon.svg";
-// import sun from "../assets/sun.svg";
-
+import React from "react";
+import { Link, useNavigate } from "react-router-dom"; // Import Link and useNavigate
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
+  const { user, logout } = useAuth(); // Get the user object from context
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    localStorage.setItem("login", "false");
-    localStorage.removeItem("userId");
-    window.location.href = "/auth";
+    logout(); // This already handles state update and redirect
   };
-//  const [Mode, setMode] = useState("light");
- const [isLogin, setisLogin] = useState(localStorage.getItem("login") === "true" ? true : false);
+
   return (
-    <nav className="navbar">
-      {/* <div className={`${Mode === "dark" && "bg-black"} `}>
-        <button
-          onClick={() => setMode(Mode === "light" ? "dark" : "light")}
-          className={`transition duration-300 ease-in-out transform ${
-            Mode === "dark"
-              ? "bg-gray-800 text-white"
-              : "bg-gray-200 text-black"
-          } p-2 rounded-full`}
-        >
-          {Mode === "dark" ? (
-            <span>
-              <svg
-                width="50px"
-                height="50px"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M7 3V0H9V3H7Z" fill="#000000" />
-                <path d="M9 13V16H7V13H9Z" fill="#000000" />
-                <path
-                  d="M11 8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8C5 6.34315 6.34315 5 8 5C9.65685 5 11 6.34315 11 8Z"
-                  fill="#000000"
-                />
-                <path d="M0 9H3V7H0V9Z" fill="#000000" />
-                <path d="M16 7H13V9H16V7Z" fill="#000000" />
-                <path
-                  d="M3.75735 5.17157L1.63603 3.05025L3.05025 1.63603L5.17157 3.75735L3.75735 5.17157Z"
-                  fill="#000000"
-                />
-                <path
-                  d="M12.2426 10.8284L14.364 12.9497L12.9497 14.364L10.8284 12.2426L12.2426 10.8284Z"
-                  fill="#000000"
-                />
-                <path
-                  d="M3.05025 14.364L5.17157 12.2426L3.75735 10.8284L1.63603 12.9498L3.05025 14.364Z"
-                  fill="#000000"
-                />
-                <path
-                  d="M12.9497 1.63604L10.8284 3.75736L12.2426 5.17158L14.364 3.05026L12.9497 1.63604Z"
-                  fill="#000000"
-                />
-              </svg>
-            </span>
-          ) : (
-            <span>
-              <svg
-                width="50px"
-                height="50px"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z"
-                  stroke="#000000"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-          )}
-        </button>
-      </div> */}
-    <nav className="flex justify-between items-center p-4 border-b border-pink-500">
-      <div onClick={()=>{window.location.href = '/'}} className="text-2xl font-bold">LOGO</div>
-      {!isLogin && <button onClick={()=>{window.location.href = '/auth'}} className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition">Login/Register</button>}
-      {isLogin && <button onClick={handleLogout} className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition">Logout</button>}
-    </nav>
+    <nav className="flex justify-between items-center p-4 border-b border-pink-500 bg-white shadow-sm">
+      <Link to="/" className="text-2xl font-bold text-slate-800">
+        DevPath
+      </Link>
+      <div className="flex items-center gap-4">
+        {/* --- Conditional Rendering Logic --- */}
+        {user ? (
+          // If user is logged in, show their name and a Logout button
+          <>
+            <button
+              onClick={handleLogout}
+              className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/auth"
+            className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition"
+          >
+            Login / Register
+          </Link>
+        )}
+      </div>
     </nav>
   );
 };

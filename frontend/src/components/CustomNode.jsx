@@ -1,5 +1,7 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
+import { Link } from 'react-router-dom';
+
 
 const TypeIcon = ({ type }) => {
   if (type === "video") {
@@ -12,9 +14,10 @@ const TypeIcon = ({ type }) => {
 };
 
 const CustomNode = ({ id, data }) => {
-  const { label, description, url, type, isCompleted, onChange, onDelete } = data;
+  const { label, notes, url, type, isCompleted, onChange, onDelete } = data;
 
   return (
+    <Link to={data.detailUrl}>
     <div className="relative group">
       <Handle type="target" id="top"    position={Position.Top}  className="!bg-slate-400 w-3 h-3" />
       <Handle type="target" id="right"  position={Position.Right} className="!bg-slate-400 w-3 h-3" />
@@ -38,7 +41,7 @@ const CustomNode = ({ id, data }) => {
           <input type="text" placeholder="Enter URL..." value={url} onChange={(e) => onChange(id, { url: e.target.value })} className="text-sm text-blue-600 placeholder-slate-400 bg-slate-50 rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         </div>
         
-        <textarea placeholder="Description" value={description} onChange={(e) => onChange(id, { description: e.target.value })} className="text-sm text-slate-600 bg-slate-50 rounded p-2 w-full mt-2 h-20 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        <textarea placeholder="notes" value={notes} onChange={(e) => onChange(id, { notes: e.target.value })} className="text-sm text-slate-600 bg-slate-50 rounded p-2 w-full mt-2 h-20 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         <div className="flex items-center justify-between mt-2">
           <label className="flex items-center">
             <input type="checkbox" checked={isCompleted} onChange={(e) => onChange(id, { isCompleted: e.target.checked })} className="mr-2" />
@@ -47,6 +50,7 @@ const CustomNode = ({ id, data }) => {
         </div>
       </div>
     </div>
+    </Link>
   );
 };
 

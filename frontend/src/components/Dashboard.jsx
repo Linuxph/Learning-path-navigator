@@ -1,123 +1,117 @@
 import React, { useEffect, useState } from "react";
-import {toast} from "react-toastify";
-import Path from "./Path";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom"; 
+import { useAuth } from "../context/AuthContext"; 
 
 const Dashboard = () => {
-  const [paths, setpaths] = useState([]);
-  const [activePanel, setActivePanel] = useState(null);
+  const [paths, setPaths] = useState([]);
+  const [activePanel, setActivePanel] = useState(1);
+  
+  // FIX: Get user, token from context and navigate function from router
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
 
-  const handleClick = () => {
-    if( localStorage.getItem("login") === "true") {
-      window.location.href = "/edit/new";
-    }else{
-      toast.error("Please login to create a new path.");
-      return;
-    }
-  }
+  // FIX: The useEffect hook must be called BEFORE the return statement.
+  useEffect(() => {
+    const fetchPaths = async () => {
+      // Guard clause: only fetch if the user is logged in and we have a token.
+      if (!token) return;
 
-  
-  
-  
-  return (
-    useEffect( () => {
-      localStorage.setItem("login", "false");
-      const fetchPaths = async () => {
-        try {
-          const response = await fetch("http://localhost:3000/api/paths", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          if (!response.ok) {
-            throw new Error("Failed to fetch paths");
-          }
-          const data = await response.json();
-          console.log("Fetched paths:", data);
-          setpaths(data);
-        } catch (error) {
-          toast.error("An error occurred while fetching paths.");
+      try {
+        const response = await fetch("http://localhost:3000/api/paths", {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch paths");
         }
-      };
+        const data = await response.json();
+        console.log("Fetched paths:", data); // Debugging line to check fetched data
+        // FIX: Your API likely returns an object like { paths: [...] }
+        setPaths(data|| []);
+      } catch (error) {
+        toast.error("An error occurred while fetching paths.");
+      }
+    };
 
-      fetchPaths();
-      setActivePanel(1);
-    }, []),
+    fetchPaths();
+  }, [token]); 
 
-    // <div>
-    //   <div className="main">
-    //     <div className="main_functionalities flex gap-10 w-full">
-    //       <div className="learning_path">
-    //         <button className="border-black border-[3px] p-1 cursor-pointer w-[200px] m-5 hover:font-bold transition-all delay-200">
-    //           Learning Paths
-    //         </button>
-    //       </div>
-    //       <div className="prep_test">
-    //         <button className="border-black border-[3px] p-1 cursor-pointer w-[200px] m-5 hover:font-bold transition-all delay-200">
-    //           Prepare your Test
-    //         </button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
-    <div className=" text-white font-sans">
-    
-    <div className="flex gap-6 px-4 py-8 z-10 relative">
-        <AnimatedButton text="Learning Paths" onClick={() => setActivePanel(1)} />
+  // FIX: Corrected handleClick function
+  const handleClick = () => {
+    if (user) { // Check for the user object from context
+      navigate("/edit/new"); // Use navigate for smooth routing
+    } else {
+      toast.error("Please login to create a new path.");
+    }
+  };
+
+  return (
+    <div className="text-white font-sans">
+      <div className="flex gap-6 px-4 py-8 z-10 relative">
+        <AnimatedButton
+          text="Learning Paths"
+          onClick={() => setActivePanel(1)}
+        />
+        {/* You can re-enable this when the AI feature is ready */}
         {/* <AnimatedButton text="Prepare Your Test" onClick={() => setActivePanel(2)} /> */}
       </div>
 
       {/* Panel Section */}
       {activePanel === 1 && (
-        <div className="absolute top-[120px] left-0 w-full h-[calc(100%-120px)] text-black flex flex-col items-center justify-center px-6">
-          {/* <div className="w-full h-1 bg-pink-500 animate-expand-origin-left  rounded-full mb-6"></div> */}
-          <div className="text-lg">
-            {/* <span className="text-pink-500">Learning Paths</span> are the steps to become a what you want to be. */}
-            { paths.length > 0 ? (
-              <div className="mt-4 w-full max-w-2xl">
-                {paths.map((path, index) => (
-                  <div key={index} className="path text-center w-[15vw] h-[5vh] rounded-2xl border-black border-2" >
-                    <Link to={`/path/${path._id}`}>{path.title}</Link>
+        <div className="absolute top-[120px] left-0 w-full h-[calc(100%-120px)] text-black py-6 px-6">
+          {paths.length > 0 ? (
+            paths.map((path) => (
+              <div key={path._id} className="py-2">
+                <Link
+                  to={`/path/${path._id}`}
+                  className="block max-w-md p-4 bg-white rounded-lg shadow hover:shadow-md transition"
+                >
+                  <h2 className="text-xl font-semibold">{path.title}</h2>
+                  <div className="flex items-center gap-3 mt-2">
+                    <div className="w-full bg-slate-200 rounded-full h-2.5">
+                      <div
+                        className="bg-blue-600 h-2.5 rounded-full"
+                        style={{ width: `${path.progress || 0}%` }}
+                      ></div>
+                    </div>
+                    <span className="font-semibold text-slate-700">
+                      {path.progress || 0}%
+                    </span>
                   </div>
-                ))}
+                </Link>
               </div>
-            ) : (
-              <div className="mt-4 text-gray-500"> Currently <span className="text-pink-500">there</span> is no path to show </div>
-            )}
-          </div>
-          
-        </div>
-      )}
-      {activePanel === 2 && (
-        <div className="absolute top-[120px] left-0 w-full h-[calc(100%-120px)] text-black flex flex-col items-center justify-center px-6">
-          {/* <div className="w-full h-1 bg-pink-500 animate-expand-origin-left  rounded-full mb-6"></div> */}
-          <div className="text-lg">Currently <span className="text-pink-500">there</span> is no test scheduled</div>
+            ))
+          ) : (
+            <div className="mt-4 text-gray-500">
+              You haven't created any paths yet. Click the '+' to start.
+            </div>
+          )}
         </div>
       )}
 
-      {/* Plus Icon */}
-      <div className="flex justify-end pr-8 mt-12 z-10 relative ">
-        <button onClick={handleClick} className=" w-12 h-12 border-2 font-bold text-3xl border-pink-500 rounded-full flex items-center justify-center text-pink-500 text-xl hover:bg-pink-500 hover:text-white transition">
+      {/* Plus Icon to create a new path */}
+      <div className="fixed bottom-8 right-8 z-20">
+        <button
+          onClick={handleClick}
+          className="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center text-white text-4xl hover:bg-pink-600 transition shadow-lg"
+        >
           +
         </button>
       </div>
     </div>
-
   );
 };
 
-export default Dashboard;
-
-
-
+// This component can stay the same
 function AnimatedButton({ text, onClick }) {
+  // ... (no changes needed here)
   return (
     <div className="relative group">
-      <button
-        onClick={onClick}
-        className="px-6 py-2 bg-pink-500 rounded text-white font-medium"
-      >
+      <button onClick={onClick} className="px-6 py-2 bg-pink-500 rounded text-white font-medium">
         {text}
       </button>
       <div className="absolute -bottom-2 left-0 w-full h-1 overflow-hidden">
@@ -126,3 +120,5 @@ function AnimatedButton({ text, onClick }) {
     </div>
   );
 }
+
+export default Dashboard;

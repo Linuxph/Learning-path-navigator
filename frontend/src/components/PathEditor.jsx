@@ -10,10 +10,13 @@ import {
 import "@xyflow/react/dist/style.css";
 import { toast } from "react-toastify";
 import CustomNode from "./CustomNode"; 
+import BackButton from "./BackButton";
+import { useAuth } from "../context/AuthContext"; 
 
 
 // --- 2. The Main Editor Component ---
 export default function RoadmapEditor() {
+  const { user,token } = useAuth(); 
   const [pathTitle, setPathTitle] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nodeTypes = { custom: CustomNode };
@@ -42,7 +45,7 @@ export default function RoadmapEditor() {
         label: `Topic ${newId}`,
         type: "article",
         url: "",
-        description: "",
+        notes: "",
         isCompleted: false,
         onChange: updateNodeData,
         onDelete: deleteNode, 
@@ -54,13 +57,20 @@ export default function RoadmapEditor() {
   const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: "#334155" } }, eds)), [setEdges]);
 
   const onSave = useCallback(() => {
-    const pathData = { userId: localStorage.getItem("userId") ,nodes, edges };
+
+    const pathData = { userId: user.id  ,nodes, edges };
+
+
+    console.log(pathData);
     
     const fire = async () => {
       try {
         const response = await fetch("http://localhost:3000/api/path", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json", 
+            "Authorization": `Bearer ${token}` 
+          },
           body: JSON.stringify({
             userId: pathData.userId,
             title: pathTitle,
@@ -87,6 +97,7 @@ export default function RoadmapEditor() {
   return (
     <div style={{ display: "flex", height: "90vh", width: "100vw", fontFamily: "sans-serif" }}>
       <div className="sidebar" style={{ width: "250px", padding: "20px", borderRight: "1px solid #e2e8f0", background: "#f8fafc", display: "flex", flexDirection: "column" }}>
+        <BackButton />
         <h2 style={{ marginTop: 0, borderBottom: "1px solid #e2e8f0", paddingBottom: "15px" }}>
           {pathTitle ? pathTitle : "Roadmap Editor"}
         </h2>

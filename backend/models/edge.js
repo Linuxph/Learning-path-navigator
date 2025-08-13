@@ -8,6 +8,14 @@ const edgeSchema = new mongoose.Schema({
     style: { 
         stroke: { type: String, default: '#334155' }, // Color of the edge
     },
+    sourceHandle: {
+        type: String,
+        required: false, 
+    },
+    targetHandle: {
+        type: String,
+        required: false,
+    },
     pathId: { type: mongoose.Schema.Types.ObjectId, ref: 'Path', required: true }, 
 });
 

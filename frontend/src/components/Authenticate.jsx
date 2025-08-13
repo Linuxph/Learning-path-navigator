@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
+import {useAuth} from '../context/AuthContext'; 
 
 export default function Authenticate() {
+  const { login } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [formState, setFormState] = useState({
     email: "",
@@ -42,12 +44,12 @@ export default function Authenticate() {
       }
 
       const data = await response.json();
-      console.log("Login success:", data);
+      login(data); 
       toast.success("Login successful!");
       // Handle successful login (e.g., store token, redirect)
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.user._id);
-      localStorage.setItem("login",true);
+      // localStorage.setItem("token", data.token);
+      // localStorage.setItem("userId", data.user._id);
+      // localStorage.setItem("login",true);
       window.location.href = "/";  
     } catch (error) {
       toast.error(error.message || "An error occurred during login.");

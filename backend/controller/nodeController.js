@@ -1,14 +1,17 @@
 const e = require('express');
 const Node = require('../models/Node');
 
-// Get all nodes
-exports.getAllNodes = async (req, res) => {
+exports.getNodeById = async (req, res) => {
     try {
-        const nodes = await Node.find();
-        res.status(200).json(nodes);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+        const { nodeId } = req.params;
+        const node = await Node.findById(nodeId);
+        if (!node) {
+          return res.status(404).json({ message: 'Node not found' });
+        }
+        res.status(200).json({ node });
+      } catch (error) {
+        res.status(500).json({ message: 'Error fetching node', error: error.message });
+      }
 };
 
 // Create a new node
@@ -28,6 +31,9 @@ exports.updateNode = async (req, res) => {
     const newData = req.body;
     try {
         const updatedNode = await Node.updateOne({ _id: id }, { $set: newData });
+        if (updatedNode.modifiedCount === 0) {
+            return res.status(404).json({ message: 'Node not found or no changes made' });
+        }
         res.status(200).json(updatedNode);
     } catch (error) {
         res.status(400).json({ message: error.message });
