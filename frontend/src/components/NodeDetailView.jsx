@@ -12,13 +12,14 @@ const NodeDetailView = () => {
   useEffect(() => {
     if (!token) return;
 
-    const fetchNode = async () => {
+    const fetchNode = async () => { 
       setLoading(true);
       try {
         const response = await fetch(`http://localhost:3000/api/node/${nodeId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
+        console.log("Fetched node data:", data.node); // Debugging line to check fetched data
         setNode(data.node);
       } catch (error) {
         console.error("Failed to fetch node details:", error);
@@ -42,7 +43,7 @@ const NodeDetailView = () => {
         <div className="p-6 sm:p-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">{node.label}</h1>
           <a
-            href={node.url}
+            href={node.data.url}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block mb-6 px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
@@ -50,7 +51,7 @@ const NodeDetailView = () => {
             Read on Original Site →
           </a>
           <div className="prose prose-lg max-w-none text-slate-700">
-            <p>{node.notes}</p>
+            <p>{node.summary}</p>
           </div>
         </div>
       </article>

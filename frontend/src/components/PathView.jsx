@@ -73,7 +73,7 @@ const PathView = () => {
       );
 
       // Call the new backend endpoint
-      await fetch(`http://localhost:3000/api/node/${nodeId}`, {
+      await fetch(`http://localhost:3000/api/node/update/${nodeId}`, {
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json", 

@@ -40,9 +40,9 @@ const App = () => {
           <Route
             path="/path/:pathId/node/:nodeId"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <NodeDetailView />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
         </Routes>
