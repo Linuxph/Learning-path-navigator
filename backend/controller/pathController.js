@@ -141,10 +141,13 @@ const generateQuiz = async (req, res) => {
       // 1. Initialize the AI client
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  
+
       // 2. Fetch the path and its nodes
-      const path = await Path.findById(req.params.pathId);
-      const nodes = await Node.find({ pathId: req.params.pathId });
+      const path = await Path.findById({ _id : req.params.pathId});
+      const nodes = await Node.find({ pathId : req.params.pathId });
+
+      console.log(path, nodes);
+
   
       if (!path || nodes.length === 0) {
         return res.status(404).json({ message: "Path or nodes not found" });

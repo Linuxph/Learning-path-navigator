@@ -9,7 +9,6 @@ import "@xyflow/react/dist/style.css";
 import { useParams } from "react-router-dom";
 import CustomNode from "./CustomNode";
 import BackButton from "./BackButton";
-import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext"; 
 
 const PathView = () => {
@@ -21,30 +20,6 @@ const PathView = () => {
 
   const nodeTypes = { custom: CustomNode };
 
-  const [quiz, setQuiz] = useState(null);
-  const [isLoadingQuiz, setIsLoadingQuiz] = useState(false);
-
-  const startQuiz = async () => {
-    setIsLoadingQuiz(true);
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/path/${pathId}/generate-quiz`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", 
-            'Authorization': `Bearer ${token}` 
-          },
-        }
-      );
-      const quizData = await response.json();
-      setQuiz(quizData);
-    } catch (error) {
-      toast.error("Could not generate quiz.");
-    } finally {
-      setIsLoadingQuiz(false);
-    }
-  };
 
   const onNodesChange = useCallback(
     (changes) =>
@@ -161,30 +136,7 @@ const PathView = () => {
         onConnect={onConnect}
         fitView
       />
-      <button
-        onClick={startQuiz}
-        disabled={isLoadingQuiz}
-        className="mt-2 px-4 py-2 bg-purple-600 text-white rounded ..."
-      >
-        {isLoadingQuiz ? "Generating..." : "Start Quiz"}
-      </button>
-      {quiz && (
-        <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg w-1/2">
-            {/* You would build your interactive quiz UI here */}
-            <h2 className="text-2xl font-bold mb-4">Quiz Time!</h2>
-            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96">
-              {JSON.stringify(quiz, null, 2)}
-            </pre>
-            <button
-              onClick={() => setQuiz(null)}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
-            >
-              Close Quiz
-            </button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

@@ -35,8 +35,8 @@ app.use(helmet());
 
 
 app.use('/api',auth);
-app.use('/api',authMiddleware, paths);
-app.use('/api',authMiddleware, node);
+app.use('/api/path',authMiddleware, paths);
+app.use('/api/node',authMiddleware, node);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
