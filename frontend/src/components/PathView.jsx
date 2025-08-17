@@ -38,7 +38,6 @@ const PathView = () => {
 
   const handleNodeUpdate = async (nodeId, updatedData) => {
     try {
-      // Optimistically update the UI for a snappy user experience
       setNodes((nds) =>
         nds.map((node) =>
           node.id === nodeId
@@ -47,7 +46,6 @@ const PathView = () => {
         )
       );
 
-      // Call the new backend endpoint
       await fetch(`http://localhost:3000/api/node/update/${nodeId}`, {
         method: "PATCH",
         headers: { 
@@ -56,9 +54,9 @@ const PathView = () => {
         },
         body: JSON.stringify(updatedData),
       });
+
+
     } catch (error) {
-      console.error("Failed to update node:", error);
-      // Optional: Add logic to revert the UI change on failure
       toast.error("Failed to update node. Please try again.");
       
     }

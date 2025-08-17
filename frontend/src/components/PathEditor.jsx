@@ -112,7 +112,7 @@ export default function RoadmapEditor() {
         </div>
       </div>
       {isModalOpen && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl w-96">
             <h3 className="text-xl font-bold mb-4">Set Your Roadmap Title</h3>
             <form onSubmit={(e) => {

@@ -7,18 +7,15 @@ const Dashboard = () => {
   const [paths, setPaths] = useState([]);
   const [activePanel, setActivePanel] = useState(1);
   
-  // FIX: Get user, token from context and navigate function from router
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
-  // FIX: The useEffect hook must be called BEFORE the return statement.
   useEffect(() => {
     const fetchPaths = async () => {
-      // Guard clause: only fetch if the user is logged in and we have a token.
       if (!token) return;
 
       try {
-        const response = await fetch("http://localhost:3000/api/paths", {
+        const response = await fetch("http://localhost:3000/api/path/all", {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -29,10 +26,10 @@ const Dashboard = () => {
           throw new Error("Failed to fetch paths");
         }
         const data = await response.json();
-        console.log("Fetched paths:", data); // Debugging line to check fetched data
-        // FIX: Your API likely returns an object like { paths: [...] }
+        console.log("Fetched paths:", data);
         setPaths(data|| []);
       } catch (error) {
+        console.error("Error fetching paths:", error);
         toast.error("An error occurred while fetching paths.");
       }
     };

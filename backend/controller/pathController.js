@@ -144,7 +144,7 @@ const generateQuiz = async (req, res) => {
 
       // 2. Fetch the path and its nodes
       const path = await Path.findById({ _id : req.params.pathId});
-      const nodes = await Node.find({ pathId : req.params.pathId });
+      const nodes = await Node.find({ "data.pathId" : req.params.pathId });
 
       console.log(path, nodes);
 

@@ -32,7 +32,8 @@ exports.updateNode = async (req, res) => {
     const { id } = req.params;
     const newData = req.body;
     try {
-        const updatedNode = await Node.updateOne({ _id: id }, { $set: newData });
+        const updatedNode = await Node.updateOne({ _id: id }, { $set: {"data.isCompleted":Object.values(newData)[0]} });
+
         if (updatedNode.modifiedCount === 0) {
             return res.status(404).json({ message: 'Node not found or no changes made' });
         }
