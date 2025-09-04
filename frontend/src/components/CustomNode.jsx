@@ -1,6 +1,5 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { Link } from 'react-router-dom';
 
 
 const TypeIcon = ({ type }) => {
@@ -14,11 +13,15 @@ const TypeIcon = ({ type }) => {
 };
 
 const CustomNode = ({ id, data }) => {
-  const { label, notes, url, type, isCompleted, onChange, onDelete } = data;
+  const { label, notes, url, type, isCompleted, onChange, onDelete, detailUrl } = data;
 
+
+  // const handleClick = (event) => {
+    
+  // };
   return (
-    <Link to={data.detailUrl}>
-    <div className="relative group">
+    
+    <div className="relative group cursor-pointer" >
       <Handle type="target" id="top"    position={Position.Top}  className="!bg-slate-400 w-3 h-3" />
       <Handle type="target" id="right"  position={Position.Right} className="!bg-slate-400 w-3 h-3" />
       <Handle type="source" id="left"   position={Position.Left}  className="!bg-slate-400 w-3 h-3" />
@@ -50,7 +53,6 @@ const CustomNode = ({ id, data }) => {
         </div>
       </div>
     </div>
-    </Link>
   );
 };
 

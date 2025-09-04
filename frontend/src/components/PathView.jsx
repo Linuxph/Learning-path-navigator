@@ -7,19 +7,21 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import CustomNode from "./CustomNode";
 import BackButton from "./BackButton";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
 
 const PathView = () => {
-  const { token } = useAuth(); 
+  const { token } = useAuth();
   const pathId = useParams().pathId;
+  const navigate = useNavigate();
+
 
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
 
   const nodeTypes = { custom: CustomNode };
-
 
   const onNodesChange = useCallback(
     (changes) =>
@@ -48,17 +50,14 @@ const PathView = () => {
 
       await fetch(`http://localhost:3000/api/node/update/${nodeId}`, {
         method: "PATCH",
-        headers: { 
-          "Content-Type": "application/json", 
-          'Authorization': `Bearer ${token}`
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedData),
       });
-
-
     } catch (error) {
       toast.error("Failed to update node. Please try again.");
-      
     }
   };
 
@@ -79,7 +78,7 @@ const PathView = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -99,12 +98,13 @@ const PathView = () => {
             type: node.data.type,
             isCompleted: node.data.isCompleted,
             onChange: handleNodeUpdate,
+            detailUrl: `/path/${pathId}/node/${node._id.toString()}`,
           },
-          detailUrl: `/path/${pathId}/node/${node._id.toString()}`,
 
           measured: node.measured,
         }));
         console.log("Formatted nodes:", formattedNodes);
+        console.log(formattedNodes[0].detailUrl);
         setNodes(formattedNodes);
 
         const formattedEdges = data.edges.map((edge) => ({
@@ -122,6 +122,13 @@ const PathView = () => {
     fetchPath();
   }, [pathId, setNodes, setEdges]);
 
+  const handleNodeClick = (event, node) => {
+    // The 'node' object contains the data for the node that was clicked
+    if (node.data && node.data.detailUrl) {
+      navigate(node.data.detailUrl);
+    }
+  };
+
   return (
     <div className="w-full h-[86vh]">
       <BackButton />
@@ -131,10 +138,10 @@ const PathView = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
         onConnect={onConnect}
         fitView
       />
-      
     </div>
   );
 };

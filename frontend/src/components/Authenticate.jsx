@@ -50,7 +50,7 @@ export default function Authenticate() {
       // localStorage.setItem("token", data.token);
       // localStorage.setItem("userId", data.user._id);
       // localStorage.setItem("login",true);
-      window.location.href = "/";  
+      window.location.href = "/dashboard";  
     } catch (error) {
       toast.error(error.message || "An error occurred during login.");
     }

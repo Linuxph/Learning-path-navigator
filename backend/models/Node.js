@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Path = require('./path');
 
 const nodeSchema = new mongoose.Schema({
     nodeId: { type: String, required: true }, 
@@ -26,36 +27,43 @@ const nodeSchema = new mongoose.Schema({
 
 });
 
-// async function updatePathProgress(doc) {
-//     const pathId = doc.pathId;
-//     if (!pathId) return;
+async function updatePathProgress(doc) {
+    const pathId = doc.data.pathId;
+    if (!pathId) return;
   
-//     // Find all nodes for the given path
-//     const nodes = await mongoose.model('Node').find({ pathId: pathId });
-//     if (nodes.length === 0) {
-//       await Path.findByIdAndUpdate(pathId, { progress: 0 });
-//       return;
-//     }
+    // Find all nodes for the given path
+    const nodes = await mongoose.model('Node').find({ "data.pathId": pathId });
+    // console.log(nodes);
+    if (nodes.length === 0) {
+      await Path.findByIdAndUpdate(pathId, { progress: 0 });
+      return;
+    }
   
-//     // Calculate progress
-//     const completedNodes = nodes.filter(node => node.isCompleted).length;
-//     const progress = Math.round((completedNodes / nodes.length) * 100);
+    // Calculate progress
+    const completedNodes = nodes.filter(node => node.data.isCompleted).length;
+    // console.log(completedNodes, nodes.length);
+    const progress = Math.round((completedNodes / nodes.length) * 100);
+
+    
+    // console.log(`Updating progress for Path ${pathId}: ${progress}%`);
+    // Update the parent Path document
+    await Path.findByIdAndUpdate(pathId, { progress: progress });
+  }
   
-//     // Update the parent Path document
-//     await Path.findByIdAndUpdate(pathId, { progress: progress });
-//   }
+  // Attach the middleware to 'save' and 'remove' events
+  nodeSchema.post('save', async function() {
+    console.log('Node saved:', this);
+    await updatePathProgress(this);
+  });
   
-//   // Attach the middleware to 'save' and 'remove' events
-//   NodeSchema.post('save', async function() {
-//     await updatePathProgress(this);
-//   });
+  // We need a special hook for findByIdAndUpdate
   
-//   // We need a special hook for findByIdAndUpdate
-//   NodeSchema.post('findOneAndUpdate', async function(doc) {
-//     if (doc) {
-//       await updatePathProgress(doc);
-//     }
-//   });
+  nodeSchema.post('findOneAndUpdate', async function(doc) {
+    console.log('Node updated:', doc);
+    if (doc) {
+      await updatePathProgress(doc);
+    }
+  });
 
 const Node = mongoose.model('Node', nodeSchema);
 module.exports = Node;
