@@ -94,7 +94,7 @@ Setup the Frontend:
         Start the React app: npm start
         The frontend will be running on http://localhost:3001 (or another port).
 
-📚 API Endpoints
+API Endpoints
 
 A brief overview of the core API routes available. All /api/paths and /api/nodes routes are protected.
 Method	             Endpoint	                               Description
@@ -106,13 +106,13 @@ GET	             /api/paths/:id	                    Get a single path with its n
 PATCH	         /api/update/:nodeId	            Update a node (e.g., mark as complete).
 POST	         /api/paths/:pathId/generate-quiz	Generate a quiz for a specific path.
 
-🌟 Future Improvements
+Future Improvements
 
-    Allow users to share their roadmaps with a public link.
+Allow users to share their roadmaps with a public link.
 
-    Implement team-based collaboration on a single roadmap.
+Implement team-based collaboration on a single roadmap.
 
-    Add more AI features, such as automatic content summarization.
+Add more AI features, such as automatic content summarization.
 
-    Quiz with Face Cam for more like mock for online assessments.
+Quiz with Face Cam for more like mock for online assessments.
 
