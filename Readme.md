@@ -24,8 +24,6 @@ Key Features
 
 Live Demo & Visuals
 
-(Since the project is not deployed, replace this section with GIFs of your application in action. This is the most important part!)
-
 ![alt text](image.png)
 
 Login & Dashboard
@@ -97,14 +95,14 @@ Setup the Frontend:
 API Endpoints
 
 A brief overview of the core API routes available. All /api/paths and /api/nodes routes are protected.
-Method	             Endpoint	                               Description
-POST	         /api/auth/register	                Register a new user.
-POST	         /api/auth/login	                Login an existing user and get a JWT.
-POST	         /api/paths	                      Create a new learning path with its nodes/edges.
-GET	             /api/paths	                        Get all paths for the logged-in user.
-GET	             /api/paths/:id	                    Get a single path with its nodes/edges.
-PATCH	         /api/update/:nodeId	            Update a node (e.g., mark as complete).
-POST	         /api/paths/:pathId/generate-quiz	Generate a quiz for a specific path.
+    Method	             Endpoint	                               Description
+    POST	         /api/auth/register	                Register a new user.
+    POST	         /api/auth/login	                Login an existing user and get a JWT.
+    POST	         /api/paths	                      Create a new learning path with its nodes/edges.
+    GET	             /api/paths	                        Get all paths for the logged-in user.
+    GET	             /api/paths/:id	                    Get a single path with its nodes/edges.
+    PATCH	         /api/update/:nodeId	            Update a node (e.g., mark as complete).
+    POST	         /api/paths/:pathId/generate-quiz	Generate a quiz for a specific path.
 
 Future Improvements
 
